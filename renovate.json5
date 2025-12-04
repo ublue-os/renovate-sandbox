@@ -17,31 +17,6 @@
       ],
       datasourceTemplate: 'docker',
     },
-    ],
-
-  "packageRules": [
-    {
-      "automerge": true,
-      "matchUpdateTypes": ["pin", "pinDigest"]
-    },
-    {
-      "automerge": true,
-      "matchManagers": ["dockerfile"],
-      "matchUpdateTypes": ["digest"]
-    },
-    {
-      "matchUpdateTypes": ["pin", "digest", "pinDigest"],
-      "matchPackageNames": ["ghcr.io/jasonn3/build-container-installer", "ghcr.io/hhd-dev/rechunk"],
-      "automerge": false
-    },
-    {
-      "automerge": true,
-      "matchUpdateTypes": ["digest"],
-      "matchDepNames": [
-        "ghcr.io/ublue-os/kinoite-main",
-        "ghcr.io/get-aurora-dev/common"
-      ]
-    }
-  ]
+    ]
 }
 
