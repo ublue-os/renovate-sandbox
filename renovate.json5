@@ -1,14 +1,16 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "customManagers": [
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  customManagers: [
     {
-      "customType": "regex",
-      "fileMatch": ["\\.spec$"],
-      "matchStrings": [
-        "Name:\\s+(?<depName>[\\w-]+)[\\s\\S]*?Version:\\s+(?<currentValue>[\\d\\.]+)"
+      customType: 'regex',
+      managerFilePatterns: [
+        '/\\.spec$/',
       ],
-      "datasourceTemplate": "rpm",
-      "registryUrlTemplate": "https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-43&arch=x86_64"
-    }
-  ]
+      matchStrings: [
+        'Name:\\s+(?<depName>[\\w-]+)[\\s\\S]*?Version:\\s+(?<currentValue>[\\d\\.]+)',
+      ],
+      datasourceTemplate: 'rpm',
+      registryUrlTemplate: 'https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-43&arch=x86_64',
+    },
+  ],
 }
