@@ -1,62 +1,14 @@
 {
-  extends: [
-    'config:best-practices',
-  ],
-  customManagers: [
-    {
-      customType: 'regex',
-      managerFilePatterns: [
-        '/.*\\.spec/',
-      ],
-      matchStrings: [
-        '#\\s?renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?\\s*Version:\\s*(?<currentValue>.*)\\s',
-        '#\\s?renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))? currentValue=(?<currentValue>.*?)\n%global \\S+ (?<currentDigest>.*)\\s',
-      ],
-      versioningTemplate: '{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}',
-    },
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["/.*\\.spec/"], 
+      "fileMatch": ["\\.spec$"],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>.*?) repo=(?<repo>.*?) pkg=(?<packageName>.*?)\\s[^\\n]*?(?<currentValue>[\\d.]+[^\\s]*)"
+        "Name:\\s+(?<depName>[\\w-]+)[\\s\\S]*?Version:\\s+(?<currentValue>[\\d\\.]+)"
       ],
       "datasourceTemplate": "rpm",
-      "extractVersionTemplate": "^(?<version>\\d\\.\\d)",
-      "versioningTemplate": "loose",
-      "registryUrlTemplate": "https://dl.fedoraproject.org/pub/fedora/linux/releases/{{lookup (split repo \"-\") 1}}/Everything/x86_64/os/repodata/",
-      "depNameTemplate": "{{packageName}}"
-    },
-  ],
-  packageRules: [
-    {
-      enabled: false,
-      matchUpdateTypes: [
-        'digest',
-        'pinDigest',
-        'pin',
-      ],
-      matchDepTypes: [
-        'container',
-      ],
-      matchFileNames: [
-        '.github/workflows/**.yaml',
-        '.github/workflows/**.yml',
-      ],
-    },
-    {
-      matchPackageNames: [
-        'rpm-ostree',
-      ],
-      extractVersion: '^(?<version>\\d+\\.\\d+)',
-    },
-    {
-      automerge: true,
-      matchUpdateTypes: [
-        'digest',
-      ],
-      matchDepNames: [
-        'registry.fedoraproject.org/fedora',
-      ],
-    },
-  ],
+      "registryUrlTemplate": "https://mirrors.fedoraproject.org/mirrorlist?repo=fedora-43&arch=x86_64"
+    }
+  ]
 }
