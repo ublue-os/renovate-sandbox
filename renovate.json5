@@ -1,53 +1,78 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:best-practices"
+  extends: [
+    'config:best-practices',
   ],
-
-  // Do not rebase when the default branch is updated
-  "rebaseWhen": "never",
-    customManagers: [
+  customManagers: [
     {
       customType: 'regex',
       managerFilePatterns: [
-        '/^Justfile$/',
+        '/.*\\.spec/',
       ],
       matchStrings: [
-        '(?<justName>.+?)\\s:=\\s"(?<packageName>\\S+):(?<currentValue>\\S+)@(?<currentDigest>sha256:[a-f0-9]+?)"',
+        '#\\s?renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?\\s*Version:\\s*(?<currentValue>.*)\\s',
+        '#\\s?renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))? currentValue=(?<currentValue>.*?)\n%global \\S+ (?<currentDigest>.*)\\s',
       ],
-      datasourceTemplate: 'docker',
-    },
-    ],
-
-  "packageRules": [
-    {
-      "automerge": true,
-      "matchUpdateTypes": ["pin", "pinDigest"]
+      versioningTemplate: '{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}',
     },
     {
-      "automerge": true,
-      "matchManagers": ["dockerfile"],
-      "matchUpdateTypes": ["digest"]
+      customType: 'regex',
+      managerFilePatterns: [
+        '/.*\\.spec/',
+      ],
+      matchStrings: [
+        '# renovate: datasource=(?<datasource>.*?) repo=(?<repo>.*?) pkg=(?<packageName>.*?)\\s[^\\n]*?(?<currentValue>[\\d.]+[^\\s]*)',
+      ],
+      datasourceTemplate: 'rpm',
+      extractVersionTemplate: '^(?<version>\\d\\.\\d)',
+      versioningTemplate: 'loose',
+      registryUrlTemplate: "https://dl.fedoraproject.org/pub/fedora/linux/releases/{{#split repo \"-\"}}{{this.1}}{{/split}}/Everything/x86_64/os/repodata/",
+      "depNameTemplate": "{{packageName}}"
     },
     {
-      "matchUpdateTypes": ["pin", "digest", "pinDigest"],
-      "matchPackageNames": ["ghcr.io/jasonn3/build-container-installer", "ghcr.io/hhd-dev/rechunk"],
-      "automerge": false
+      customType: 'regex',
+      managerFilePatterns: [
+        '/.*\\.spec/',
+      ],
+      matchStrings: [
+        '# renovate: datasource=yum repo=(?<registryUrl>[^\\s]+) pkg=(?<depName>[^\\s]+)\\s*[^\\s]+\\s+(?<currentValue>[^\\s]+)',
+      ],
+      datasourceTemplate: 'npm',
+      extractVersionTemplate: '^(?<version>\\d\\.\\d+\\.\\d+)',
+      versioningTemplate: 'loose',
+      registryUrlTemplate: "https://yum2npm.io/repos/{{replace '/' '/modules/' registryUrl}}/packages",
+    },
+  ],
+  packageRules: [
+    {
+      enabled: false,
+      matchUpdateTypes: [
+        'digest',
+        'pinDigest',
+        'pin',
+      ],
+      matchDepTypes: [
+        'container',
+      ],
+      matchFileNames: [
+        '.github/workflows/**.yaml',
+        '.github/workflows/**.yml',
+      ],
     },
     {
-      "automerge": true,
-      "matchUpdateTypes": ["digest"],
-      "matchDepNames": [
-        "quay.io/fedora-ostree-desktops/kinoite",
-        "ghcr.io/ublue-os/brew",
-        "ghcr.io/get-aurora-dev/common"
-      ]
+      matchPackageNames: [
+        'rpm-ostree',
+      ],
+      extractVersion: '^(?<version>\\d+\\.\\d+)',
     },
     {
-      "matchDepNames": ["quay.io/fedora-ostree-desktops/kinoite"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
-    }
-  ]
+      automerge: true,
+      matchUpdateTypes: [
+        'digest',
+      ],
+      matchDepNames: [
+        'registry.fedoraproject.org/fedora',
+      ],
+    },
+  ],
 }
 
