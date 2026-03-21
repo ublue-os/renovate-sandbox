@@ -15,31 +15,16 @@
       versioningTemplate: '{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}',
     },
     {
-      customType: 'regex',
-      managerFilePatterns: [
-        '/.*\\.spec/',
+      "customType": "regex",
+      "managerFilePatterns": ["/.*\\.spec/"], 
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) repo=(?<repo>.*?) pkg=(?<packageName>.*?)\\s[^\\n]*?(?<currentValue>[\\d.]+[^\\s]*)"
       ],
-      matchStrings: [
-        '# renovate: datasource=(?<datasource>.*?) repo=(?<repo>.*?) pkg=(?<packageName>.*?)\\s[^\\n]*?(?<currentValue>[\\d.]+[^\\s]*)',
-      ],
-      datasourceTemplate: 'rpm',
-      extractVersionTemplate: '^(?<version>\\d\\.\\d)',
-      versioningTemplate: 'loose',
-      registryUrlTemplate: "https://dl.fedoraproject.org/pub/fedora/linux/releases/{{#split repo \"-\"}}{{this.1}}{{/split}}/Everything/x86_64/os/repodata/",
+      "datasourceTemplate": "rpm",
+      "extractVersionTemplate": "^(?<version>\\d\\.\\d)",
+      "versioningTemplate": "loose",
+      "registryUrlTemplate": "https://dl.fedoraproject.org/pub/fedora/linux/releases/{{lookup (split repo \"-\") 1}}/Everything/x86_64/os/repodata/",
       "depNameTemplate": "{{packageName}}"
-    },
-    {
-      customType: 'regex',
-      managerFilePatterns: [
-        '/.*\\.spec/',
-      ],
-      matchStrings: [
-        '# renovate: datasource=yum repo=(?<registryUrl>[^\\s]+) pkg=(?<depName>[^\\s]+)\\s*[^\\s]+\\s+(?<currentValue>[^\\s]+)',
-      ],
-      datasourceTemplate: 'npm',
-      extractVersionTemplate: '^(?<version>\\d\\.\\d+\\.\\d+)',
-      versioningTemplate: 'loose',
-      registryUrlTemplate: "https://yum2npm.io/repos/{{replace '/' '/modules/' registryUrl}}/packages",
     },
   ],
   packageRules: [
@@ -75,4 +60,3 @@
     },
   ],
 }
-
