@@ -33,7 +33,6 @@
     },
     {
       "matchUpdateTypes": ["pin", "digest", "pinDigest"],
-      "matchPackageNames": ["quay.io/coreos/chunkah"],
       "automerge": false
     },
     {
